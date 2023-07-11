@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/b1e29ef1-e551-457a-8c3e-bd405fe185e6/resourceGroups/ThePedalPitstop/providers/Microsoft.Web/sites/ThePedalPitstop",
+    "appService.deploySubpath": "."
+}

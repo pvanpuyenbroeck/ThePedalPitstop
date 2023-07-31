@@ -1,6 +1,6 @@
 
 export const BREAKPOINTS = {
-    tabletMin: 550,
+    tabletMin: 600,
     laptopMin: 1100,
     desktopMin: 1500,
 };

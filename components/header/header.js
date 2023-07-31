@@ -1,71 +1,56 @@
 import React from 'react'
 import styled from 'styled-components'
 import {Instagram,Twitter} from 'react-feather';
+import { useState, useCallback, useEffect } from "react";
+import { BREAKPOINTS } from '../constants';
+import HamburgerNav from '../HamburgerNav';
+import Link from 'next/link';
 
-import { useState,useEffect } from "react";
-import MobileDetect from "mobile-detect";
-import { useContext } from "react";
+const useMediaQuery = (width) => {
+    const [targetReached, setTargetReached] = useState(false);
 
+    const updateTarget = useCallback((e) => {
+        if (e.matches) {
+            setTargetReached(true);
+        } else {
+            setTargetReached(false);
+        }
+    }, []);
 
-export const getIsSsrMobile = (context) => {
-    const md = new MobileDetect(context.req.headers["user-agent"]);
-console.log(md);
-    return Boolean(md.mobile());
+    useEffect(() => {
+        const media = window.matchMedia(`(max-width: ${width}px)`);
+        media.addListener(updateTarget);
+
+        // Check on mount (callback is not called until a change occurs)
+        if (media.matches) {
+            setTargetReached(true);
+        }
+
+        return () => media.removeListener(updateTarget);
+    }, []);
+
+    return targetReached;
 };
 
-
-export const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    // Call handler right away so state gets updated with initial window size
-    handleResize();
-
-    // Don't forget to remove event listener on cleanup
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowSize;
-};
-
-   export const useIsMobile = () => {
-       console.log(useContext(IsSsrMobileContext));
-       const isSsrMobile = useContext(IsSsrMobileContext);
-       const { width: windowWidth } = useWindowSize();
-       const isBrowserMobile = !!windowWidth && windowWidth < 992;
-
-       return isSsrMobile || isBrowserMobile;
-   };
 export default function header(isMobile) {
+    const isBreakpoint = useMediaQuery(BREAKPOINTS.tabletMin);
     const NavMenu = () =>{
-        console.log(isMobile);
-        if (isMobile) {
-            return (
+        console.log(isBreakpoint);
+            if(isBreakpoint){
+                return <HamburgerMenu>Hamburger</HamburgerMenu>;
+            }
+
+                else{
+                                return (
                 <Contact>
                     <ContactInfo style={{ color: "var(--primarycolor)" }}>info@thepedalpitstop.be</ContactInfo>
                     <ContactInfo>
-                        <a>Contact</a>
+                        <Link href="/collection">Contact</Link>
                     </ContactInfo>
                     <Instagram />
                     <Twitter />
-                </Contact>
-            );
-        } else {
-            return <div>not</div>;
-        }
-    }
+                </Contact>)}
+        } 
   return (
       <HeaderWrapper>
           <Logo>The Pedal Pitstop</Logo>
@@ -140,4 +125,8 @@ const Logo = styled.div`
 `;
 const Spacer = styled.div`
     flex-grow:1;
+`;
+
+const HamburgerMenu = styled(HamburgerNav)`
+
 `;
